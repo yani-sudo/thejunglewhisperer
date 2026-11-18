@@ -14,7 +14,7 @@
      authenticated SMTP on the host (IONOS). Set FORM_ENDPOINT to '' to fall
      back to composing the application in the visitor's email app instead.
      ───────────────────────────────────────────────────────────── */
-  var FORM_ENDPOINT = '/api/contact.php';
+  var FORM_ENDPOINT = 'https://forms.thejunglewhisperer.com/contact.php';
   var CONTACT_EMAIL = 'jason@thejunglewhisperer.com';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

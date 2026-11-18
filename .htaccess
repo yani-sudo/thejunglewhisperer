@@ -5,6 +5,17 @@
 Options -Indexes
 DirectoryIndex index.html
 
+# Never serve key or certificate material, even if someone drops it in by hand.
+<FilesMatch "\.(key|pem|crt|csr|p12|pfx|sql|bak|old|orig|log|ini|env)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
@@ -29,7 +40,7 @@ ErrorDocument 404 /404.html
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests"
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self' https://forms.thejunglewhisperer.com; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests"
 
   # HTML: revalidate. Static assets: cache for a month.
   <FilesMatch "\.(html|webmanifest|txt)$">
