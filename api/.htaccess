@@ -1,0 +1,22 @@
+# Protect the credentials file and any runtime state from being fetched.
+# Apache 2.4 syntax as used by IONOS.
+
+<IfModule mod_authz_core.c>
+  <FilesMatch "^(config\.php|.*\.log|.*\.json)$">
+    Require all denied
+  </FilesMatch>
+
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^\.private/ - [F,L]
+  </IfModule>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+  <FilesMatch "^(config\.php|.*\.log|.*\.json)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+</IfModule>
+
+Options -Indexes

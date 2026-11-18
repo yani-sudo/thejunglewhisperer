@@ -1,0 +1,7 @@
+[build]
+  # Upload dist/ (produced by ./build.sh) rather than the working folder, so the
+  # mail archives, zips and other notes in the project directory never go public.
+  publish = "dist"
+
+# Headers and redirects live in _headers and _redirects, which Netlify applies
+# automatically. Do not duplicate them here.
