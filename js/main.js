@@ -18,7 +18,7 @@
   // Relay used while the IONOS webspace has no TLS: an HTTPS endpoint that
   // forwards the enquiry to Jason's own mailbox. Requires a one-time activation
   // click from that inbox. Set to '' once FORM_ENDPOINT is live.
-  var RELAY_ENDPOINT = 'https://formsubmit.co/ajax/jason@thejunglewhisperer.com';
+  var RELAY_ENDPOINT = '';
   var CONTACT_EMAIL = 'jason@thejunglewhisperer.com';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
