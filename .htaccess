@@ -40,7 +40,7 @@ ErrorDocument 404 /404.html
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self' https://forms.thejunglewhisperer.com https://formsubmit.co; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests"
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self' https://api.web3forms.com; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests"
 
   # HTML: revalidate. Static assets: cache for a month.
   <FilesMatch "\.(html|webmanifest|txt)$">

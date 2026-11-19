@@ -15,6 +15,12 @@
      back to composing the application in the visitor's email app instead.
      ───────────────────────────────────────────────────────────── */
   var FORM_ENDPOINT = '';
+  // Primary delivery: Web3Forms — a hosted endpoint that accepts a normal
+  // browser form post and forwards the enquiry to Jason's mailbox. Works from
+  // a static host with no server, no certificate and no mail credentials.
+  // The access key is public by design: it is bound to this domain.
+  var WEB3FORMS_KEY = '486c5389-2748-4f9b-910c-a8f2fb1ad166';
+  var WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
   // Relay used while the IONOS webspace has no TLS: an HTTPS endpoint that
   // forwards the enquiry to Jason's own mailbox. Requires a one-time activation
   // click from that inbox. Set to '' once FORM_ENDPOINT is live.
@@ -259,7 +265,8 @@
         '?subject=' + encodeURIComponent(msg.subject) +
         '&body=' + encodeURIComponent(msg.body);
 
-      var ENDPOINT = FORM_ENDPOINT || RELAY_ENDPOINT;
+      var useWeb3 = !!WEB3FORMS_KEY;
+      var ENDPOINT = useWeb3 ? WEB3FORMS_ENDPOINT : (FORM_ENDPOINT || RELAY_ENDPOINT);
       if (!ENDPOINT) {
         // Email-app delivery: always available, nothing stored on this site.
         revealSuccess('Your email app is opening with your application pre-filled. Press send there and it comes straight to Jason, who replies personally within 48 hours.');
@@ -277,7 +284,7 @@
       new FormData(form).forEach(function (value, key) { out[key] = value; });
       out.elapsed = Date.now() - loadedAt;
 
-      var usingRelay = !FORM_ENDPOINT;
+      var usingRelay = !useWeb3 && !FORM_ENDPOINT;
       if (usingRelay) {
         out._subject = msg.subject;
         out._captcha = 'false';
@@ -285,18 +292,38 @@
         out._replyto = out.email || '';
       }
 
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(out)
-      })
+      var request;
+      if (useWeb3) {
+        // FormData keeps this a "simple" request: no preflight, no CORS
+        // negotiation, and it is what the hosting endpoint expects.
+        var body = new FormData();
+        body.append('access_key', WEB3FORMS_KEY);
+        body.append('subject', msg.subject);
+        body.append('from_name', 'The Jungle Whisperer website');
+        body.append('replyto', out.email || '');
+        body.append('botcheck', '');
+        Object.keys(out).forEach(function (key) { body.append(key, out[key]); });
+        request = fetch(WEB3FORMS_ENDPOINT, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: body
+        });
+      } else {
+        request = fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(out)
+        });
+      }
+
+      request
         .then(function (response) {
           return response.json()
             .catch(function () { return null; })
             .then(function (data) {
               var accepted = data && (data.ok === true || data.success === true || data.success === 'true');
               if (response.ok && accepted) return data;
-              var err = new Error((data && data.error) || 'Sending failed (' + response.status + ').');
+              var err = new Error((data && (data.error || data.message)) || 'Sending failed (' + response.status + ').');
               err.serverReplied = true;
               err.status = response.status;
               throw err;
