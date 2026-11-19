@@ -14,7 +14,11 @@
      authenticated SMTP on the host (IONOS). Set FORM_ENDPOINT to '' to fall
      back to composing the application in the visitor's email app instead.
      ───────────────────────────────────────────────────────────── */
-  var FORM_ENDPOINT = 'https://forms.thejunglewhisperer.com/contact.php';
+  var FORM_ENDPOINT = '';
+  // Relay used while the IONOS webspace has no TLS: an HTTPS endpoint that
+  // forwards the enquiry to Jason's own mailbox. Requires a one-time activation
+  // click from that inbox. Set to '' once FORM_ENDPOINT is live.
+  var RELAY_ENDPOINT = 'https://formsubmit.co/ajax/jason@thejunglewhisperer.com';
   var CONTACT_EMAIL = 'jason@thejunglewhisperer.com';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -255,7 +259,8 @@
         '?subject=' + encodeURIComponent(msg.subject) +
         '&body=' + encodeURIComponent(msg.body);
 
-      if (!FORM_ENDPOINT) {
+      var ENDPOINT = FORM_ENDPOINT || RELAY_ENDPOINT;
+      if (!ENDPOINT) {
         // Email-app delivery: always available, nothing stored on this site.
         revealSuccess('Your email app is opening with your application pre-filled. Press send there and it comes straight to Jason, who replies personally within 48 hours.');
         window.location.href = mailto;
@@ -272,7 +277,15 @@
       new FormData(form).forEach(function (value, key) { out[key] = value; });
       out.elapsed = Date.now() - loadedAt;
 
-      fetch(FORM_ENDPOINT, {
+      var usingRelay = !FORM_ENDPOINT;
+      if (usingRelay) {
+        out._subject = msg.subject;
+        out._captcha = 'false';
+        out._template = 'table';
+        out._replyto = out.email || '';
+      }
+
+      fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(out)
@@ -281,7 +294,8 @@
           return response.json()
             .catch(function () { return null; })
             .then(function (data) {
-              if (response.ok && data && data.ok) return data;
+              var accepted = data && (data.ok === true || data.success === true || data.success === 'true');
+              if (response.ok && accepted) return data;
               var err = new Error((data && data.error) || 'Sending failed (' + response.status + ').');
               err.serverReplied = true;
               err.status = response.status;
