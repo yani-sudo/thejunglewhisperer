@@ -54,13 +54,14 @@
 
 /* ─── DESIGN TOKENS ─── */
 :root {
-  /* The Jungle Whisperer — "the rainforest palette" (lead with ivory and deep green;
-     canopy for highlights, clay for occasional warmth, mist for quiet surfaces) */
+  /* The Jungle Whisperer — approved identity 21 Nov 2026 (lead with ivory and
+     deep green; canopy for highlights, champagne as an optional accent,
+     mist for quiet surfaces) */
   --color-forest: #073b22;        /* rainforest */
   --color-forest-light: #0e5a33;  /* derived hover state */
-  --color-gold: #86a62f;          /* canopy — highlights only, never small text */
-  --color-gold-light: #a3c24a;    /* canopy lifted for dark grounds */
-  --color-orange: #ac6348;        /* clay */
+  --color-gold: #8dba19;          /* canopy — highlights only, never small text */
+  --color-gold-light: #a6d13a;    /* canopy lifted for dark grounds */
+  --color-orange: #cdbb9e;        /* champagne — optional accent, rules only */
   --color-cream: #f5f1e7;         /* ivory */
   --color-cream-dark: #dce3d4;    /* mist */
   --color-charcoal: #08271e;      /* night */
@@ -629,7 +630,7 @@ section {
 .intro-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(134, 166, 47, 0.25);
+  border-color: rgba(141, 186, 25, 0.25);
 }
 
 .intro-card-icon {
@@ -638,7 +639,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(134, 166, 47, 0.12);
+  background: rgba(141, 186, 25, 0.12);
   border-radius: 50%;
   font-size: 1.5rem;
   margin-bottom: 1.25rem;
@@ -696,7 +697,7 @@ section {
 
 .experience-card:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(134, 166, 47, 0.3);
+  border-color: rgba(141, 186, 25, 0.3);
 }
 
 .experience-card h3 {
@@ -836,7 +837,7 @@ section {
   color: var(--color-gold);
   margin-bottom: 0.75rem;
   padding: 0.3rem 0.75rem;
-  background: rgba(134, 166, 47, 0.1);
+  background: rgba(141, 186, 25, 0.1);
   border-radius: 50px;
 }
 
@@ -953,7 +954,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(134, 166, 47, 0.15);
+  background: rgba(141, 186, 25, 0.15);
   border-radius: 50%;
 }
 
@@ -1823,7 +1824,7 @@ section {
 
 :root {
   /* readable canopy for small text on light backgrounds (AA at 0.75rem bold);
-     the brand's #86A62F is a highlight colour and measures 2.5:1 on ivory */
+     the brand's #8DBA19 is a highlight colour and measures 2.0:1 on ivory */
   --color-gold-text: #4a6413;
 }
 
@@ -2241,8 +2242,9 @@ header[id] {
 
 /* ─── BRAND: footer lockup, brand line, business-card QR ─── */
 .footer-logo {
-  width: 220px;
-  height: 220px;
+  width: 340px;      /* above the guide's 320 px digital minimum for the full lockup */
+  height: auto;
+  max-width: 100%;
   margin-bottom: 0.5rem;
 }
 
@@ -2303,8 +2305,8 @@ header[id] {
   }
 
   .footer-logo {
-    width: 180px;
-    height: 180px;
+    width: 320px;    /* still at the guide's minimum; the lockup never shrinks below it */
+    height: auto;
   }
 }
 
